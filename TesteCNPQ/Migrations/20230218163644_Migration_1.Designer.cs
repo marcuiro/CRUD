@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TesteCNPQ.Data;
 
@@ -11,9 +12,10 @@ using TesteCNPQ.Data;
 namespace TesteCNPQ.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230218163644_Migration_1")]
+    partial class Migration_1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -243,16 +245,11 @@ namespace TesteCNPQ.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("IdLocal");
 
-                    b.Property<Guid>("LocalId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("NomeResponsavel")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("NomeResponsavel");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LocalId");
 
                     b.ToTable("Agendamento");
                 });
@@ -354,17 +351,6 @@ namespace TesteCNPQ.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("TesteCNPQ.Models.Agendamento", b =>
-                {
-                    b.HasOne("TesteCNPQ.Models.Local", "Local")
-                        .WithMany()
-                        .HasForeignKey("LocalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Local");
                 });
 #pragma warning restore 612, 618
         }

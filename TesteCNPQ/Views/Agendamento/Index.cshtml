@@ -1,0 +1,49 @@
+﻿@using TesteCNPQ.Models;
+
+@model List<Agendamento>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="row col-md-12 align-items-center">
+    <h1 class="col-md-8">Agendamentos</h1>
+    <a class="row col-md-4 btn btn-dark" href="@Url.Action("Create", "Agendamento")">Agendar um Novo Evento</a>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Nome Responsável
+            </th>
+            <th>
+                Data Início
+            </th>
+            <th>
+                Data Término
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NomeResponsavel)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataInicio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataTermino)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

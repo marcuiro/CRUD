@@ -11,5 +11,6 @@ namespace TesteCNPQ.Data
         }
         public DbSet<Local> Local { get; set; }
         public DbSet<LogAuditoria> LogAuditoria { get; set; }
+        public DbSet<Agendamento> Agendamento { get; set; }
     }
 }

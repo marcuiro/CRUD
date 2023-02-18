@@ -32,7 +32,7 @@ namespace TesteCNPQ.Controllers
         // GET: Local/Details/5
         public async Task<IActionResult> Details(Guid id)
         {
-            if (id == null || Contexto.Local == null)
+            if (Contexto.Local == null)
             {
                 return NotFound();
             }

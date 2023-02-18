@@ -1,8 +1,24 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers;
+@{
     ViewData["Title"] = "Home Page";
+    var local = ViewBag.Local != null ? (List<Local>)ViewBag.Local : null;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@model List<Agendamento>
+
+<head>
+    <style>
+        .raise:hover{
+            box-shadow: 0 0.5em 0.5em -0.4em var(--hover);
+            transform: translateY(-0.30em);
+        }
+    </style>
+</head>
+<div class="row">
+    <div class="col-md-6 col-xs-12">
+        <partial name="~/Views/Local/Index.cshtml" model="local"/>
+    </div>
+    <div class="col-md-6 col-xs-12">
+        <partial name="~/Views/Agendamento/Index.cshtml" model="Model" />
+    </div>
 </div>
