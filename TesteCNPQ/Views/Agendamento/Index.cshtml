@@ -27,23 +27,39 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NomeResponsavel)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataInicio)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataTermino)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.NomeResponsavel
+                </td>
+                <td>
+                    @item.DataInicio
+                </td>
+                <td>
+                    @item.DataTermino
+                </td>
+                <td>
+                    <a @Url.Action("Edit", "Agendamento", new { id = item.Id })>
+                        <span class="fa-stack">
+                            <i class="fa-solid fa-circle fa-stack-2x" style="color: midnightblue;"></i>
+                            <i class="fas fa-edit fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a> |
+                    <a @Url.Action("Details", "Agendamento", new { id = item.Id })>
+                        <span class="fa-stack">
+                            <i class="fa-solid fa-circle fa-stack-2x" style="color: orange;"></i>
+                            <i class="fa fa-bars fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a> |
+                    <a @Url.Action("Delete", "Agendamento", new { id = item.Id })>
+                        <span class="fa-stack">
+                            <i class="fa-solid fa-circle fa-stack-2x" style="color: tomato;"></i>
+                            <i class="fa fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

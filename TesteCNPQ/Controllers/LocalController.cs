@@ -1,8 +1,11 @@
-﻿using System;
+﻿using System.Web;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -80,7 +83,7 @@ namespace TesteCNPQ.Controllers
             Contexto.Local.Add(local);
             Contexto.SaveChanges();
 
-            return View("Index", Contexto.Local.ToList());
+            return RedirectToAction("Index", "Home", Contexto.Local.ToList());
         }
 
         // GET: Local/Edit/5
@@ -147,55 +150,27 @@ namespace TesteCNPQ.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Home");
             }
             return View(local);
         }
 
-        // GET: Local/Delete/5
-        public async Task<IActionResult> Delete(Guid id)
+        public ActionResult Delete(Guid id)
         {
-            if (id == null || Contexto.Local == null)
+            if (Contexto.Local == null)
             {
                 return NotFound();
             }
 
-            var local = await Contexto.Local
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var local = Contexto.Local.FirstOrDefault(m => m.Id == id);
             if (local == null)
             {
                 return NotFound();
             }
+            Contexto.Remove(local);
+            Contexto.SaveChanges();
 
-            return View(local);
-        }
-
-        // POST: Local/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
-        {
-            if (Contexto.Local == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Local'  is null.");
-            }
-            var local = await Contexto.Local.FindAsync(id);
-            if (local != null)
-            {
-                Contexto.Local.Remove(local);
-
-                Contexto.LogAuditoria.Add(new LogAuditoria
-                {
-                    EmailUsuario = User.Identity.Name,
-                    DetalhesAuditoria = String.Concat("Não sei direito mas o Id (deletado) é: ",
-                    local.Id, "e o nome (deletado) é: ", local.Nome, "e hoje (deleção) é: ", DateTime.Now.ToLongDateString())
-                });
-
-                Contexto.SaveChanges();
-            }
-
-            await Contexto.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Home");
         }
 
         private bool LocalExists(Guid id)
