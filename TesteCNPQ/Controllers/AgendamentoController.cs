@@ -22,7 +22,7 @@ namespace TesteCNPQ.Controllers
         // GET: Agendamentoes
         public ActionResult Index()
         {
-              return View(Contexto.Agendamento.ToList());
+            return View(Contexto.Agendamento.ToList());
         }
 
         // GET: Agendamentoes/Details/5
@@ -46,6 +46,7 @@ namespace TesteCNPQ.Controllers
         // GET: Agendamentoes/Create
         public IActionResult Create()
         {
+            ViewBag.Local = Contexto.Local.ToList();
             return View();
         }
 
@@ -54,32 +55,35 @@ namespace TesteCNPQ.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NomeResponsavel,DataInicio,DataTermino")] Agendamento agendamento)
+        public ActionResult Create([Bind("Local,Id,NomeResponsavel,DataInicio,DataTermino")] Agendamento agendamento)
         {
+            ViewBag.Local = Contexto.Local.ToList();
+            agendamento.Id = Guid.NewGuid();
+
             if (ModelState.IsValid)
             {
-
-                agendamento.Id = Guid.NewGuid();
                 Contexto.Add(agendamento);
-                await Contexto.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                Contexto.SaveChanges();
+                return RedirectToAction("Index", "Home", agendamento);
             }
-            return View(agendamento);
+            throw new Exception("deu pau");
         }
 
         // GET: Agendamentoes/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public ActionResult Edit(Guid? id)
         {
             if (id == null || Contexto.Agendamento == null)
             {
                 return NotFound();
             }
 
-            var agendamento = await Contexto.Agendamento.FindAsync(id);
+            var agendamento = Contexto.Agendamento.Find(id);
             if (agendamento == null)
             {
                 return NotFound();
             }
+
+            Contexto.SaveChanges();
             return View(agendamento);
         }
 
@@ -150,14 +154,14 @@ namespace TesteCNPQ.Controllers
             {
                 Contexto.Agendamento.Remove(agendamento);
             }
-            
+
             await Contexto.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool AgendamentoExists(Guid id)
         {
-          return Contexto.Agendamento.Any(e => e.Id == id);
+            return Contexto.Agendamento.Any(e => e.Id == id);
         }
     }
 }
