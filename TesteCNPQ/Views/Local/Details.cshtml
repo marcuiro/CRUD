@@ -1,36 +1,37 @@
-﻿@model TesteCNPQ.Models.Local
+﻿@using TesteCNPQ.Models;
+
+@model Local
 
 @{
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Detalhes Local</h1>
 
 <div>
-    <h4>Local</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Endereço)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Endereço)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CapacidadeMax)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CapacidadeMax)
-        </dd>
-    </dl>
+    <hr class="col-md-4" />
+    <div class="col-md-4">
+        <label for="Nome">Nome</label>
+        <input class="form-control" value="@Model.Nome" readonly />
+    </div>
+    <div class="col-md-4" style=" margin-top: 10px">
+        <label for="Endereço">Endereço</label>
+        <input class="form-control" value="@Model.Endereço" readonly />
+    </div>
+    <div class="col-md-4" style=" margin-top: 10px">
+        <label for="CapacidadeMax">Capacidade Máxima</label>
+        <input class="form-control" value="@Model.CapacidadeMax" readonly />
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div style=" margin-top: 20px" class="row col-md-12">
+    <div class="row col-md-1">
+        <div>
+            <a class="btn btn-dark" href="@Url.Action("Edit", "Local", new { id = Model.Id })" style="text-decoration: none;">Editar</a>
+        </div>
+    </div>
+    <div class="row col-md-5">
+        <div>
+            <a href="@Url.Action("Index", "Home")" class="btn btn-dark">Voltar à Lista</a>
+        </div>
+    </div>
 </div>

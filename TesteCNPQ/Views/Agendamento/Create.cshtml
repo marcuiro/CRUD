@@ -1,20 +1,40 @@
-﻿@model TesteCNPQ.Models.Agendamento
+﻿@using TesteCNPQ.Models;
+
+@model Agendamento
 
 @{
     ViewData["Title"] = "Create";
     var locais = ViewBag.Local != null ? (List<Local>)ViewBag.Local : null;
 }
+<script>
+    function validaDTHR() {
+        var inicio = document.getElementById("inicio").value;
+        var fim = document.getElementById("fim").value;
 
-<h1>Create</h1>
+        if (inicio >= fim) {
 
-<h4>Agendamento</h4>
-<hr />
+            new swal({
+                title: "Data/hora inválido!",
+                icon: "error",
+                showConfirmButton: false,
+                showDenyButton: true,
+                showCancelButton: false,
+                denyButtonText: 'Ok',
+            });
+        }
+    }
+</script>
+
+<h1>Novo Agendamento</h1>
+
+<hr class="col-md-4" />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div class="form-group">
-                <label asp-for="Local">Local</label>
-                <select id="Local" name="Local" class="form-control">
+                <label asp-for="Local">Local *</label>
+                <select id="Local" name="Local" class="form-control" required>
+                    <option default disabled>Selecione um Local</option>
                     @foreach (var local in locais)
                     {
                         <option>@local.Nome</option>
@@ -22,31 +42,37 @@
                 </select>
                 <span asp-validation-for="Local" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="NomeResponsavel" class="control-label"></label>
-                <input asp-for="NomeResponsavel" class="form-control" />
+            <div class="form-group" style=" margin-top: 10px">
+                <label asp-for="NomeResponsavel" class="control-label">Nome Responsável *</label>
+                <input asp-for="NomeResponsavel" class="form-control" required />
                 <span asp-validation-for="NomeResponsavel" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="DataInicio" class="control-label"></label>
-                <input asp-for="DataInicio" class="form-control" />
+            <div class="form-group" style=" margin-top: 10px">
+                <label asp-for="DataInicio" class="control-label">Data Início *</label>
+                <input asp-for="DataInicio" class="form-control" id="inicio"/>
                 <span asp-validation-for="DataInicio" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="DataTermino" class="control-label"></label>
-                <input asp-for="DataTermino" class="form-control" />
+            <div class="form-group" style=" margin-top: 10px">
+                <label asp-for="DataTermino" class="control-label">Data Término *</label>
+                <input asp-for="DataTermino" class="form-control" id="fim" onchange="validaDTHR()"/>
                 <span asp-validation-for="DataTermino" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div style=" margin-top: 20px" class="row col-md-12">
+                <div class="row col-md-3">
+                    <div>
+                        <input type="submit" value="Salvar" class="btn btn-dark" />
+                    </div>
+                </div>
+                <div class="row col-md-5">
+                    <div>
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-dark">Voltar à Lista</a>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{

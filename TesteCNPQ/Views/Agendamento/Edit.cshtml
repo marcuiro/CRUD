@@ -1,47 +1,59 @@
-﻿@model TesteCNPQ.Models.Agendamento
+﻿@using TesteCNPQ.Models;
+
+@model Agendamento
 
 @{
     ViewData["Title"] = "Edit";
+    var locais = ViewBag.Local != null ? (List<Local>)ViewBag.Local : null;
 }
 
-<h1>Edit</h1>
+<h1>Editar Agendamento</h1>
 
-<h4>Agendamento</h4>
-<hr />
+<hr class="col-md-4" />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="IdLocal" class="control-label"></label>
-                <input asp-for="IdLocal" class="form-control" />
-                <span asp-validation-for="IdLocal" class="text-danger"></span>
+                <label asp-for="Local">Local</label>
+                <select id="Local" name="Local" class="form-control">
+                    <option selected hidden>@Model.Local.Nome</option>
+                    @foreach (var local in locais)
+                    {
+                        <option>@local.Nome</option>
+                    }
+                </select>
             </div>
             <div class="form-group">
-                <label asp-for="NomeResponsavel" class="control-label"></label>
+                <label asp-for="NomeResponsavel" class="control-label">Nome Responsável</label>
                 <input asp-for="NomeResponsavel" class="form-control" />
                 <span asp-validation-for="NomeResponsavel" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="DataInicio" class="control-label"></label>
+            <div class="form-group" style=" margin-top: 10px">
+                <label asp-for="DataInicio" class="control-label">Data Início</label>
                 <input asp-for="DataInicio" class="form-control" />
                 <span asp-validation-for="DataInicio" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="DataTermino" class="control-label"></label>
+            <div class="form-group" style=" margin-top: 10px">
+                <label asp-for="DataTermino" class="control-label">Data Término</label>
                 <input asp-for="DataTermino" class="form-control" />
                 <span asp-validation-for="DataTermino" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <div style="margin-top: 20px" class="row col-md-12">
+                <div class="row col-md-3">
+                    <div>
+                        <input type="submit" value="Salvar" class="btn btn-dark" />
+                    </div>
+                </div>
+                <div class="row col-md-5">
+                    <div>
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-dark">Voltar à Lista</a>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

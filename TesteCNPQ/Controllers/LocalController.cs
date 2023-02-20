@@ -24,7 +24,6 @@ namespace TesteCNPQ.Controllers
             Contexto = context;
         }
 
-        // GET: Local
         public ActionResult Index()
         {
             var locais = Contexto.Local.ToList();
@@ -32,16 +31,22 @@ namespace TesteCNPQ.Controllers
             return View("Index", locais);
         }
 
-        // GET: Local/Details/5
-        public async Task<IActionResult> Details(Guid id)
+        public ActionResult Details(Guid id)
         {
             if (Contexto.Local == null)
             {
                 return NotFound();
             }
 
-            var local = await Contexto.Local
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var local = Contexto.Local.FirstOrDefault(m => m.Id == id);
+
+            Contexto.LogAuditoria.Add(new LogAuditoria
+            {
+                EmailUsuario = User.Identity.Name,
+                DetalhesAuditoria = String.Concat("Entrou na tela de Detalhes do Local com Id: ",
+                        local.Id, ", nome: ", local.Nome, "na data: ", DateTime.Now.ToLongDateString())
+            });
+
             if (local == null)
             {
                 return NotFound();
@@ -50,13 +55,13 @@ namespace TesteCNPQ.Controllers
             return View(local);
         }
 
-        // GET: Local/Create
+        
         public ActionResult Create()
         {
             Contexto.LogAuditoria.Add(new LogAuditoria
             {
                 EmailUsuario = User.Identity.Name,
-                DetalhesAuditoria = "Entrou na tela de Cadastro"
+                DetalhesAuditoria = "Entrou na tela de Criação de Local"
             });
 
             Contexto.SaveChanges();
@@ -64,37 +69,33 @@ namespace TesteCNPQ.Controllers
             return View();
         }
 
-        // POST: Local/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind("Id, Nome, Endereço, CapacidadeMax")] Local local)
         {
+            local.Id = Guid.NewGuid();
+
             Contexto.LogAuditoria.Add(new LogAuditoria
             {
                 EmailUsuario = User.Identity.Name,
-                DetalhesAuditoria = String.Concat("Não sei direito mas o Id é: ",
-                local.Id, "e o nome é: ", local.Nome, "e hoje é: ", DateTime.Now.ToLongDateString())
+                DetalhesAuditoria = String.Concat("Criou um Local com o Id: ",
+                local.Id, "e o nome: ", local.Nome, "na data: ", DateTime.Now.ToLongDateString())
             });
 
-            local.Id = Guid.NewGuid();
-            
             Contexto.Local.Add(local);
             Contexto.SaveChanges();
 
             return RedirectToAction("Index", "Home", Contexto.Local.ToList());
         }
 
-        // GET: Local/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public ActionResult Edit(Guid? id)
         {
             if (id == null || Contexto.Local == null)
             {
                 return NotFound();
             }
 
-            var local = await Contexto.Local.FindAsync(id);
+            var local = Contexto.Local.Find(id);
             if (local == null)
             {
                 return NotFound();
@@ -103,19 +104,17 @@ namespace TesteCNPQ.Controllers
             Contexto.LogAuditoria.Add(new LogAuditoria
             {
                 EmailUsuario = User.Identity.Name,
-                DetalhesAuditoria = string.Concat("Entrou na tela de Edição ta")
+                DetalhesAuditoria = string.Concat("Entrou na tela de Edição do Local com Id:",
+                local.Id, "e o nome: ", local.Nome, "na data: ", DateTime.Now.ToLongDateString())
             });
 
             Contexto.SaveChanges();
             return View(local);
         }
 
-        // POST: Local/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Nome,Endereço,CapacidadeMax")] Local local)
+        public ActionResult Edit(Guid id, [Bind("Id,Nome,Endereço,CapacidadeMax")] Local local)
         {
             if (id != local.Id)
             {
@@ -127,13 +126,13 @@ namespace TesteCNPQ.Controllers
                 try
                 {
                     Contexto.Update(local);
-                    await Contexto.SaveChangesAsync();
+                    Contexto.SaveChanges();
 
                     Contexto.LogAuditoria.Add(new LogAuditoria
                     {
                         EmailUsuario = User.Identity.Name,
-                        DetalhesAuditoria = String.Concat("Não sei direito mas o Id (editado) é: ",
-                        local.Id, "e o nome (editado) é: ", local.Nome, "e hoje (edição) é: ", DateTime.Now.ToLongDateString())
+                        DetalhesAuditoria = String.Concat("Editou o Local com o Id: ",
+                        local.Id, ", com o novo nome: ", local.Nome, "na data: ", DateTime.Now.ToLongDateString())
                     });
 
                     Contexto.SaveChanges();
@@ -161,8 +160,15 @@ namespace TesteCNPQ.Controllers
             {
                 return NotFound();
             }
-
             var local = Contexto.Local.FirstOrDefault(m => m.Id == id);
+
+            Contexto.LogAuditoria.Add(new LogAuditoria
+            {
+                EmailUsuario = User.Identity.Name,
+                DetalhesAuditoria = String.Concat("Removeu o Local do Id: ",
+                        local.Id, ", com o nome: ", local.Nome, "na data: ", DateTime.Now.ToLongDateString())
+            });
+            
             if (local == null)
             {
                 return NotFound();
