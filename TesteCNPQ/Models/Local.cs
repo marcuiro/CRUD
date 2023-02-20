@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.Extensions.Primitives;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TesteCNPQ.Models
@@ -20,6 +21,6 @@ namespace TesteCNPQ.Models
 
         [Column("CapacidadeMax")]
         [Display(Name = "CapacidadeMax")]
-        public int CapacidadeMax { get; set; }
+        public string CapacidadeMax { get; set; }
     }
 }

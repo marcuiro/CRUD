@@ -1,28 +1,38 @@
-﻿@using TesteCNPQ.Models
+﻿@using TesteCNPQ.Models;
 
-@model List<Local>
+@model List<Agendamento>
 
 @{
-    ViewBag.Title = "Index";
+    ViewData["Title"] = "Index";
 }
 
 <div class="row col-md-12 align-items-center">
-    <h1 class="col-md-10">Locais</h1>
-    <a class="row col-md-2 btn btn-dark" href="@Url.Action("Create", "Local")">Cadastrar novo Local</a>
+    <h1 class="col-md-10">Agendamentos</h1>
+    <a class="row col-md-2 btn btn-dark" href="@Url.Action("Create", "Agendamento")">Agendar um Novo Evento</a>
 </div>
 <form method="post" class="searchForm" asp-action="Index">
     <div class="row">
         <div class="input-group" style="width: 30%;height: 50%;margin-top: 24px;">
-            <input name="pesquisaLocal" class="form-control" type="text" placeholder="Pesquisar" aria-label="Pesquisa">
+            <input name="pesquisaAgendamento" class="form-control" type="text" placeholder="Pesquisar">
             <input type="submit" value="Pesquisar" class="input-group-append btn btn-dark">
         </div>
-        <div class="col-md-8">
-            <label for="tipoFiltroLocal" class="col-md-3">Tipo Filtro</label>
-            <select id="tipoFiltroLocal" name="tipoFiltroLocal" class="form-control" style="width: 20%">
-                <option>Nome</option>
-                <option>Endereço</option>
-                <option>Cap. Máxima</option>
+        <div class="col-md-2">
+            <label for="tipoFiltroAgendamento">Tipo Filtro</label>
+            <select id="tipoFiltroAgendamento" name="tipoFiltroAgendamento" class="form-control" style="width: 100%">
+                <option>Responsável</option>
+                <option>Local</option>
+                <option>Data</option>
             </select>
+        </div>
+        <div class="input-group" style="margin-top: 10px;">
+            <div class="col-md-3">
+                <label for="inicio" class="control-label">Início</label>
+                <input type="datetime-local" class="form-control" id="inicio" name="inicio" />
+            </div>
+            <div class="col-md-3">
+                <label for="fim" class="control-label">Término</label>
+                <input type="datetime-local" class="form-control" id="fim" name="fim" />
+            </div>
         </div>
     </div>
 </form>
@@ -31,35 +41,41 @@
     <thead>
         <tr>
             <th>
-                Nome
+                Responsável
             </th>
             <th>
-                Endereço
+                Local
             </th>
             <th>
-                Cap. Máxima
+                Início
+            </th>
+            <th>
+                Término
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var local in Model)
+        @foreach (var agendamento in Model)
         {
-            <tr id="app">
+            <tr>
                 <td>
-                    @local.Nome
+                    @agendamento.NomeResponsavel
                 </td>
                 <td>
-                    @local.Endereço
+                    @agendamento.LocalNome
                 </td>
                 <td>
-                    @local.CapacidadeMax
+                    @agendamento.DataInicio
+                </td>
+                <td>
+                    @agendamento.DataTermino
                 </td>
                 <td style="text-align: right;">
                     <script>
-                        function removerLocal(id) {
+                        function removerAgendamento(id) {
                             new swal({
-                                title: "Remover Local?",
+                                title: "Remover Agendamento?",
                                 text: "Essa ação não pode ser desfeita",
                                 icon: "error",
                                 showConfirmButton: true,
@@ -71,31 +87,31 @@
                                 if (willClose.isConfirmed) {
                                     $.ajax({
                                         type: "POST",
-                                        url: `@Url.Action("Delete", "Local", new { id = local.Id })`,
+                                        url: `@Url.Action("Delete", "Agendamento", new { id = agendamento.Id })`,
                                         success: function () {
                                             location.reload();
                                         }
                                     })
                                 }
                                 else if (willClose.isDenied) {
-                                    Swal.fire('Local não removido', '', 'info')
+                                    Swal.fire('Agendamento não removido', '', 'info')
                                 }
                             });
                         }
                     </script>
-                    <a href="@Url.Action("Edit", "Local", new { id = local.Id })" style="text-decoration: none;">
+                    <a href="@Url.Action("Edit", "Agendamento", new { id = agendamento.Id })" style="text-decoration: none;">
                         <span class="fa-stack">
                             <i class="fa-solid fa-circle fa-stack-2x" style="color: midnightblue;"></i>
                             <i class="fas fa-edit fa-stack-1x fa-inverse"></i>
                         </span>
                     </a>
-                    <a href="@Url.Action("Details", "Local", new { id = local.Id })" style="text-decoration: none;">
+                    <a href="@Url.Action("Details", "Agendamento", new { id = agendamento.Id })" style="text-decoration: none;">
                         <span class="fa-stack">
                             <i class="fa-solid fa-circle fa-stack-2x" style="color: orange;"></i>
                             <i class="fa fa-bars fa-stack-1x fa-inverse"></i>
                         </span>
                     </a>
-                    <a href="javascript:;" onclick="removerLocal()" id="remove" style="text-decoration: none;">
+                    <a href="javascript:;" onclick="removerAgendamento()" id="remove" style="text-decoration: none;">
                         <span class="fa-stack">
                             <i class="fa-solid fa-circle fa-stack-2x" style="color: tomato;"></i>
                             <i class="fa fa-trash fa-stack-1x fa-inverse"></i>
@@ -106,4 +122,3 @@
         }
     </tbody>
 </table>
-
