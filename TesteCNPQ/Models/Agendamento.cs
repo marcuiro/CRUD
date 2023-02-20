@@ -29,6 +29,7 @@ namespace TesteCNPQ.Models
 
         public virtual Local Local { get; set; }
 
+        public string LocalNome { get; set; }
     }
 
    

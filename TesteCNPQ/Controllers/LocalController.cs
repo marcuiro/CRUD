@@ -1,13 +1,5 @@
-﻿using System.Web;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TesteCNPQ.Data;
 using TesteCNPQ.Models;
@@ -26,7 +18,7 @@ namespace TesteCNPQ.Controllers
 
         public ActionResult Index()
         {
-            var locais = Contexto.Local.ToList();
+            var locais = Contexto.Local.OrderBy(l => l.Nome).ToList();
 
             return View("Index", locais);
         }

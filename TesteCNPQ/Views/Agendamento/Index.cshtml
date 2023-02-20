@@ -10,6 +10,32 @@
     <h1 class="col-md-10">Agendamentos</h1>
     <a class="row col-md-2 btn btn-dark" href="@Url.Action("Create", "Agendamento")">Agendar um Novo Evento</a>
 </div>
+<form method="post" class="searchForm" asp-action="Index">
+    <div class="row">
+        <div class="input-group" style="width: 30%;height: 50%;margin-top: 24px;">
+            <input name="pesquisaAgendamento" class="form-control" type="text" placeholder="Pesquisar">
+            <input type="submit" value="Pesquisar" class="input-group-append btn btn-dark">
+        </div>
+        <div class="col-md-2">
+            <label for="tipoFiltroAgendamento">Tipo Filtro</label>
+            <select id="tipoFiltroAgendamento" name="tipoFiltroAgendamento" class="form-control" style="width: 100%">
+                <option>Responsável</option>
+                <option>Local</option>
+                <option>Data</option>
+            </select>
+        </div>
+        <div class="input-group" style="margin-top: 10px;">
+            <div class="col-md-3">
+                <label for="inicio" class="control-label">Início</label>
+                <input type="datetime-local" class="form-control" id="inicio" name="inicio" />
+            </div>
+            <div class="col-md-3">
+                <label for="fim" class="control-label">Término</label>
+                <input type="datetime-local" class="form-control" id="fim" name="fim" />
+            </div>
+        </div>
+    </div>
+</form>
 
 <table class="table">
     <thead>
@@ -37,7 +63,7 @@
                     @agendamento.NomeResponsavel
                 </td>
                 <td>
-                    @agendamento.Local.Nome
+                    @agendamento.LocalNome
                 </td>
                 <td>
                     @agendamento.DataInicio
@@ -78,13 +104,13 @@
                             <i class="fa-solid fa-circle fa-stack-2x" style="color: midnightblue;"></i>
                             <i class="fas fa-edit fa-stack-1x fa-inverse"></i>
                         </span>
-                    </a> 
+                    </a>
                     <a href="@Url.Action("Details", "Agendamento", new { id = agendamento.Id })" style="text-decoration: none;">
                         <span class="fa-stack">
                             <i class="fa-solid fa-circle fa-stack-2x" style="color: orange;"></i>
                             <i class="fa fa-bars fa-stack-1x fa-inverse"></i>
                         </span>
-                    </a> 
+                    </a>
                     <a href="javascript:;" onclick="removerAgendamento()" id="remove" style="text-decoration: none;">
                         <span class="fa-stack">
                             <i class="fa-solid fa-circle fa-stack-2x" style="color: tomato;"></i>

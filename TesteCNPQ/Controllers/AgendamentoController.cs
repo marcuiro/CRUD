@@ -32,7 +32,9 @@ namespace TesteCNPQ.Controllers
 
         public ActionResult Index()
         {
-            return View(Contexto.Agendamento.ToList());
+            var agendamentos = Contexto.Agendamento.OrderBy(a => a.NomeResponsavel).ToList();
+
+            return View(agendamentos);
         }
 
         public ActionResult Details(Guid? id)
@@ -95,6 +97,7 @@ namespace TesteCNPQ.Controllers
             {
                 agendamento.Local = locais.FirstOrDefault(l => l.Nome == local);
                 agendamento.IdLocal = agendamento.Local.Id;
+                agendamento.LocalNome = agendamento.Local.Nome;
             }
 
             var validaDTHR = ValidaDataHora(agendamento.DataInicio, agendamento.DataTermino);
