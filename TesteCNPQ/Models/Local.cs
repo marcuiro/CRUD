@@ -21,6 +21,6 @@ namespace TesteCNPQ.Models
 
         [Column("CapacidadeMax")]
         [Display(Name = "CapacidadeMax")]
-        public int CapacidadeMax { get; set; }
+        public string CapacidadeMax { get; set; }
     }
 }

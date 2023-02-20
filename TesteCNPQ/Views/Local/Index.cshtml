@@ -10,6 +10,23 @@
     <h1 class="col-md-10">Locais</h1>
     <a class="row col-md-2 btn btn-dark" href="@Url.Action("Create", "Local")">Cadastrar novo Local</a>
 </div>
+<form method="post" class="searchForm" asp-action="Index">
+    <div class="row">
+        <div class="input-group" style="width: 30%;height: 50%;margin-top: 24px;">
+            <input name="pesquisaLocal" class="form-control" type="text" placeholder="Pesquisar" aria-label="Pesquisa">
+            <input type="submit" value="Pesquisar" class="input-group-append btn btn-dark">
+        </div>
+        <div class="col-md-8">
+            <label for="tipoFiltroLocal" class="col-md-3">Tipo Filtro</label>
+            <select id="tipoFiltroLocal" name="tipoFiltroLocal" class="form-control" style="width: 20%">
+                <option>Nome</option>
+                <option>Endereço</option>
+                <option>Cap. Máxima</option>
+            </select>
+        </div>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
@@ -66,26 +83,27 @@
                             });
                         }
                     </script>
-                        <a href="@Url.Action("Edit", "Local", new { id = local.Id })" style="text-decoration: none;">
-                            <span class="fa-stack">
-                                <i class="fa-solid fa-circle fa-stack-2x" style="color: midnightblue;"></i>
-                                <i class="fas fa-edit fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                        <a href="@Url.Action("Details", "Local", new { id = local.Id })" style="text-decoration: none;">
-                            <span class="fa-stack">
-                                <i class="fa-solid fa-circle fa-stack-2x" style="color: orange;"></i>
-                                <i class="fa fa-bars fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                        <a href="javascript:;" onclick="removerLocal()" id="remove" style="text-decoration: none;">
-                            <span class="fa-stack">
-                                <i class="fa-solid fa-circle fa-stack-2x" style="color: tomato;"></i>
-                                <i class="fa fa-trash fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
+                    <a href="@Url.Action("Edit", "Local", new { id = local.Id })" style="text-decoration: none;">
+                        <span class="fa-stack">
+                            <i class="fa-solid fa-circle fa-stack-2x" style="color: midnightblue;"></i>
+                            <i class="fas fa-edit fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a href="@Url.Action("Details", "Local", new { id = local.Id })" style="text-decoration: none;">
+                        <span class="fa-stack">
+                            <i class="fa-solid fa-circle fa-stack-2x" style="color: orange;"></i>
+                            <i class="fa fa-bars fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a href="javascript:;" onclick="removerLocal()" id="remove" style="text-decoration: none;">
+                        <span class="fa-stack">
+                            <i class="fa-solid fa-circle fa-stack-2x" style="color: tomato;"></i>
+                            <i class="fa fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+

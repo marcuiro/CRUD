@@ -22,11 +22,46 @@ namespace TesteCNPQ.Controllers
             Contexto = context;
         }
 
-        public ActionResult Index()
+        public DateTime ConvertToDateTime(string date)
         {
-            ViewBag.Local = Contexto.Local.ToList();
+            DateTime data;
 
+            bool isDate = DateTime.TryParse(date, out data);
+
+            return data;
+        }
+
+        public ActionResult Index(IFormCollection formData)
+        {
+            var pesquisaLocal = formData["pesquisaLocal"].ToString();
+            var pesquisaAgendamento = formData["pesquisaAgendamento"].ToString();
+            var tipoFiltroLocal = formData["tipoFiltroLocal"].ToString();
+            var tipoFiltroAgendamento = formData["tipoFiltroAgendamento"].ToString();
+            var inicio = formData["inicio"].ToString();
+            var fim = formData["fim"].ToString();
             var agendamentos = Contexto.Agendamento.ToList();
+
+
+            if (pesquisaLocal != "")
+                ViewBag.Local = Contexto.Local.Where(l => (tipoFiltroLocal == "Nome" && l.Nome.Contains(pesquisaLocal)) ||
+                                                          (tipoFiltroLocal == "Endereço" && l.Endereço.Contains(pesquisaLocal)) ||
+                                                          (tipoFiltroLocal == "Cap. Máxima" && l.CapacidadeMax.Contains(pesquisaLocal)))
+                                                          .OrderBy(l => l.Nome)
+                                                          .ToList();
+            else
+                ViewBag.Local = Contexto.Local.OrderBy(l => l.Nome).ToList();
+            
+            if (pesquisaAgendamento != "" || inicio != "" || fim != "")
+                agendamentos = Contexto.Agendamento.Where(a => (tipoFiltroAgendamento == "Responsável" && a.NomeResponsavel.Contains(pesquisaAgendamento)) ||
+                                                               (tipoFiltroAgendamento == "Local" && a.LocalNome.Contains(pesquisaAgendamento)) ||
+                                                               (tipoFiltroAgendamento == "Data" && ((this.ConvertToDateTime(inicio) == a.DataInicio) ||
+                                                               (this.ConvertToDateTime(fim)) == a.DataTermino)))
+                                                               .OrderBy(a => a.NomeResponsavel)
+                                                               .ToList();
+            else
+                agendamentos = Contexto.Agendamento.OrderBy(a => a.NomeResponsavel).ToList();
+
+            
             return View("Index", agendamentos);
         }
 
