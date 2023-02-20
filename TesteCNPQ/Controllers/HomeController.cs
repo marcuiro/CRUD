@@ -27,7 +27,7 @@ namespace TesteCNPQ.Controllers
             ViewBag.Local = Contexto.Local.ToList();
 
             var agendamentos = Contexto.Agendamento.ToList();
-            return View(agendamentos);
+            return View("Index", agendamentos);
         }
 
         public ActionResult ListaLocais()
@@ -36,13 +36,13 @@ namespace TesteCNPQ.Controllers
             return View(locais);
         }
 
-        public IActionResult Privacy()
+        public ActionResult Privacy()
         {
             return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public ActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }

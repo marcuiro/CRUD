@@ -9,9 +9,6 @@ namespace TesteCNPQ.ConfiguracaoDeEntidades
         {
             HasKey(i => i.Id);
 
-            HasRequired(i => i.Local)
-                .WithMany()
-                .HasForeignKey(i => i.IdLocal);
                 
         }
     }

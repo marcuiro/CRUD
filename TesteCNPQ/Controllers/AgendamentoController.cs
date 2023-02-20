@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Windows.Forms;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TesteCNPQ.Data;
 using TesteCNPQ.Models;
+using DevExpress.Utils.CommonDialogs.Internal;
 
 namespace TesteCNPQ.Controllers
 {
@@ -19,22 +22,37 @@ namespace TesteCNPQ.Controllers
             Contexto = context;
         }
 
-        // GET: Agendamentoes
+        public static bool ValidaDataHora(DateTime inicio, DateTime fim)
+        {
+            if (inicio >= fim)
+                return false;
+
+            return true;
+        }
+
         public ActionResult Index()
         {
             return View(Contexto.Agendamento.ToList());
         }
 
-        // GET: Agendamentoes/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public ActionResult Details(Guid? id)
         {
             if (id == null || Contexto.Agendamento == null)
             {
                 return NotFound();
             }
 
-            var agendamento = await Contexto.Agendamento
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var agendamento = Contexto.Agendamento.FirstOrDefault(m => m.Id == id);
+
+            Contexto.LogAuditoria.Add(new LogAuditoria
+            {
+                EmailUsuario = User.Identity.Name,
+                DetalhesAuditoria = String.Concat("Entrou na tela de Detalhes do Agendamento com Id: ",
+                        agendamento.Id, ", responsável: ", agendamento.NomeResponsavel, "na data: ", DateTime.Now.ToLongDateString())
+            });
+
+            var local = Contexto.Local.FirstOrDefault(l => l.Id == agendamento.IdLocal);
+            agendamento.Local = local;
             if (agendamento == null)
             {
                 return NotFound();
@@ -43,41 +61,73 @@ namespace TesteCNPQ.Controllers
             return View(agendamento);
         }
 
-        // GET: Agendamentoes/Create
-        public IActionResult Create()
+        public ActionResult Create()
         {
             ViewBag.Local = Contexto.Local.ToList();
+
+            Contexto.LogAuditoria.Add(new LogAuditoria
+            {
+                EmailUsuario = User.Identity.Name,
+                DetalhesAuditoria = "Entrou na tela de Criação de Agendamento"
+            });
+
             return View();
         }
 
-        // POST: Agendamentoes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind("Local,Id,NomeResponsavel,DataInicio,DataTermino")] Agendamento agendamento)
+        public ActionResult Create([Bind("Id,NomeResponsavel,DataInicio,DataTermino")] Agendamento agendamento, IFormCollection formData)
         {
-            ViewBag.Local = Contexto.Local.ToList();
-            agendamento.Id = Guid.NewGuid();
+            var locais = Contexto.Local.ToList();
+            ViewBag.Local = locais;
 
-            if (ModelState.IsValid)
+            agendamento.Id = Guid.NewGuid();
+            var local = formData["Local"].ToString();
+
+            Contexto.LogAuditoria.Add(new LogAuditoria
             {
-                Contexto.Add(agendamento);
-                Contexto.SaveChanges();
-                return RedirectToAction("Index", "Home", agendamento);
+                EmailUsuario = User.Identity.Name,
+                DetalhesAuditoria = String.Concat("Criou um Agendamento com o Id: ",
+                agendamento.Id, "e o responsável: ", agendamento.NomeResponsavel, "na data: ", DateTime.Now.ToLongDateString())
+            });
+
+            if (local != "Selecione um Local")
+            {
+                agendamento.Local = locais.FirstOrDefault(l => l.Nome == local);
+                agendamento.IdLocal = agendamento.Local.Id;
             }
-            throw new Exception("deu pau");
+
+            var validaDTHR = ValidaDataHora(agendamento.DataInicio, agendamento.DataTermino);
+            if (validaDTHR == false)
+                throw new Exception("Data/hora inválido!");
+                
+
+            Contexto.Add(agendamento);
+            Contexto.SaveChanges();
+
+            return RedirectToAction("Index", "Home", agendamento);
+
         }
 
-        // GET: Agendamentoes/Edit/5
+        
         public ActionResult Edit(Guid? id)
         {
+            ViewBag.Local = Contexto.Local.ToList();
+
             if (id == null || Contexto.Agendamento == null)
             {
                 return NotFound();
             }
 
             var agendamento = Contexto.Agendamento.Find(id);
+
+            Contexto.LogAuditoria.Add(new LogAuditoria
+            {
+                EmailUsuario = User.Identity.Name,
+                DetalhesAuditoria = string.Concat("Entrou na tela de Edição do Agendamento com Id:",
+                agendamento.Id, "e o responsável: ", agendamento.NomeResponsavel, "na data: ", DateTime.Now.ToLongDateString())
+            });
+
             if (agendamento == null)
             {
                 return NotFound();
@@ -87,76 +137,51 @@ namespace TesteCNPQ.Controllers
             return View(agendamento);
         }
 
-        // POST: Agendamentoes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,IdLocal,NomeResponsavel,DataInicio,DataTermino")] Agendamento agendamento)
+        public ActionResult Edit([Bind("Id,IdLocal,NomeResponsavel,DataInicio,DataTermino")] Agendamento agendamento, IFormCollection formData)
         {
-            if (id != agendamento.Id)
-            {
-                return NotFound();
-            }
 
-            if (ModelState.IsValid)
+            var locais = Contexto.Local.ToList();
+            ViewBag.Local = locais;
+
+            var local = formData["Local"].ToString();
+
+            agendamento.Local = locais.FirstOrDefault(l => l.Nome == local);
+            agendamento.IdLocal = agendamento.Local.Id;
+
+            Contexto.LogAuditoria.Add(new LogAuditoria
             {
-                try
-                {
-                    Contexto.Update(agendamento);
-                    await Contexto.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AgendamentoExists(agendamento.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(agendamento);
+                EmailUsuario = User.Identity.Name,
+                DetalhesAuditoria = String.Concat("Editou o Agendamento com o Id: ",
+                        agendamento.Id, ", com o responsávele: ", agendamento.NomeResponsavel, "na data: ", DateTime.Now.ToLongDateString())
+            });
+
+            Contexto.Update(agendamento);
+            Contexto.SaveChanges();
+
+
+            return RedirectToAction("Index", "Home", agendamento);
         }
 
-        // GET: Agendamentoes/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public ActionResult Delete(Guid id)
         {
-            if (id == null || Contexto.Agendamento == null)
-            {
-                return NotFound();
-            }
+            var agendamento = Contexto.Agendamento.Find(id);
 
-            var agendamento = await Contexto.Agendamento
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (agendamento == null)
+            Contexto.LogAuditoria.Add(new LogAuditoria
             {
-                return NotFound();
-            }
+                EmailUsuario = User.Identity.Name,
+                DetalhesAuditoria = String.Concat("Removeu o Agendamento do Id: ",
+                        agendamento.Id, ", com o responsável: ", agendamento.NomeResponsavel, "na data: ", DateTime.Now.ToLongDateString())
+            });
 
-            return View(agendamento);
-        }
-
-        // POST: Agendamentoes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
-        {
-            if (Contexto.Agendamento == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Agendamento'  is null.");
-            }
-            var agendamento = await Contexto.Agendamento.FindAsync(id);
             if (agendamento != null)
             {
                 Contexto.Agendamento.Remove(agendamento);
             }
 
-            await Contexto.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            Contexto.SaveChanges();
+            return RedirectToAction("Index", "Home");
         }
 
         private bool AgendamentoExists(Guid id)

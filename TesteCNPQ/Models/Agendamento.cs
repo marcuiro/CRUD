@@ -27,6 +27,9 @@ namespace TesteCNPQ.Models
         [Display(Name = "DataTermino")]
         public DateTime DataTermino { get; set; }
 
-        public virtual Local Local { get; set; } 
+        public virtual Local Local { get; set; }
+
     }
+
+   
 }

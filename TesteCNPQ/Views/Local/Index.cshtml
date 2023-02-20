@@ -7,87 +7,85 @@
 }
 
 <div class="row col-md-12 align-items-center">
-    <h1 class="col-md-8">Locais</h1>
-    <a class="row col-md-4 btn btn-dark" href="@Url.Action("Create", "Local")">Cadastrar novo Local</a>
+    <h1 class="col-md-10">Locais</h1>
+    <a class="row col-md-2 btn btn-dark" href="@Url.Action("Create", "Local")">Cadastrar novo Local</a>
 </div>
-<div class="row">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    Nome
-                </th>
-                <th>
-                    Endereço
-                </th>
-                <th>
-                    Capacidade Máxima
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr id="app">
-                    <td>
-                        @item.Nome
-                    </td>
-                    <td>
-                        @item.Endereço
-                    </td>
-                    <td>
-                        @item.CapacidadeMax
-                    </td>
-                    <td>
-                        <script>
-                            function removerLocal(id) {
-                                new swal({
-                                    title: "Remover Local?",
-                                    text: "Essa ação não pode ser desfeita",
-                                    icon: "error",
-                                    showConfirmButton: true,
-                                    showDenyButton: true,
-                                    showCancelButton: true,
-                                    confirmButtonText: 'Sim',
-                                    denyButtonText: 'Não',
-                                }).then((willClose) => {
-                                    if (willClose.isConfirmed) {
-                                        $.ajax({
-                                            type: "POST",
-                                            url: `@Url.Action("Delete", "Local", new { id = item.Id })`,
-                                            success: function () {
-                                                location.reload();
-                                            }
-                                        })
-                                    }
-                                    else if (willClose.isDenied) {
-                                        Swal.fire('Local não removido', '', 'info')
-                                    }
-                                });
-                            }
-                        </script>
-                        <a href="@Url.Action("Edit", "Local", new { id = item.Id })" style="text-decoration: none;">
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Nome
+            </th>
+            <th>
+                Endereço
+            </th>
+            <th>
+                Cap. Máxima
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var local in Model)
+        {
+            <tr id="app">
+                <td>
+                    @local.Nome
+                </td>
+                <td>
+                    @local.Endereço
+                </td>
+                <td>
+                    @local.CapacidadeMax
+                </td>
+                <td style="text-align: right;">
+                    <script>
+                        function removerLocal(id) {
+                            new swal({
+                                title: "Remover Local?",
+                                text: "Essa ação não pode ser desfeita",
+                                icon: "error",
+                                showConfirmButton: true,
+                                showDenyButton: true,
+                                showCancelButton: true,
+                                confirmButtonText: 'Sim',
+                                denyButtonText: 'Não',
+                            }).then((willClose) => {
+                                if (willClose.isConfirmed) {
+                                    $.ajax({
+                                        type: "POST",
+                                        url: `@Url.Action("Delete", "Local", new { id = local.Id })`,
+                                        success: function () {
+                                            location.reload();
+                                        }
+                                    })
+                                }
+                                else if (willClose.isDenied) {
+                                    Swal.fire('Local não removido', '', 'info')
+                                }
+                            });
+                        }
+                    </script>
+                        <a href="@Url.Action("Edit", "Local", new { id = local.Id })" style="text-decoration: none;">
                             <span class="fa-stack">
                                 <i class="fa-solid fa-circle fa-stack-2x" style="color: midnightblue;"></i>
                                 <i class="fas fa-edit fa-stack-1x fa-inverse"></i>
                             </span>
-                        </a> |
-                        <a href="@Url.Action("Details", "Local", new { id = item.Id })" style="text-decoration: none;">
+                        </a>
+                        <a href="@Url.Action("Details", "Local", new { id = local.Id })" style="text-decoration: none;">
                             <span class="fa-stack">
                                 <i class="fa-solid fa-circle fa-stack-2x" style="color: orange;"></i>
                                 <i class="fa fa-bars fa-stack-1x fa-inverse"></i>
                             </span>
-                        </a> |
+                        </a>
                         <a href="javascript:;" onclick="removerLocal()" id="remove" style="text-decoration: none;">
                             <span class="fa-stack">
                                 <i class="fa-solid fa-circle fa-stack-2x" style="color: tomato;"></i>
                                 <i class="fa fa-trash fa-stack-1x fa-inverse"></i>
                             </span>
                         </a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
